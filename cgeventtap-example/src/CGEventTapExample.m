@@ -74,14 +74,16 @@ static CGEventRef callback(CGEventTapProxy proxy,
       break;
 
     case kCGEventKeyDown:
-      [self updateEventStrings:[NSString stringWithFormat:@"keyDown %@", event]];
+      [self updateEventStrings:[NSString stringWithFormat:@"keyDown %lld",
+                                                          CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode)]];
       break;
     case kCGEventKeyUp:
-      [self updateEventStrings:[NSString stringWithFormat:@"keyUp %@", event]];
+      [self updateEventStrings:[NSString stringWithFormat:@"keyUp %lld",
+                                                          CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode)]];
       break;
 
     case kCGEventFlagsChanged:
-      [self updateEventStrings:[NSString stringWithFormat:@"flagsChanged %@", event]];
+      [self updateEventStrings:[NSString stringWithFormat:@"flagsChanged 0x%llx", CGEventGetFlags(event)]];
       break;
 
     default:

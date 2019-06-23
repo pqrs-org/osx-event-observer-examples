@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 3.9)
 project(nsapplication-example)
 enable_language(Swift)
 
+add_compile_options(-O2)
+
 add_executable(
   nsapplication-example
   MACOSX_BUNDLE

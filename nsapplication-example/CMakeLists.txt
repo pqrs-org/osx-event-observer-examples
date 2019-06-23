@@ -9,7 +9,6 @@ add_executable(
   src/ExampleApplication.swift
   Resources/MainMenu.xib
   Resources/Assets.xcassets
-  nsapplication_example.entitlements
 )
 
 set_source_files_properties(

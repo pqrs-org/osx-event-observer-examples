@@ -7,6 +7,12 @@
 - nsview-example
   - `[NSView keyDown]`
 
-## Requirements
+## Building example apps
+
+### Requirements
 
 - CMake (`brew install cmake`)
+
+### Instructions
+
+Open terminal and execute `make` command.

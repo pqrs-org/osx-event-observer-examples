@@ -7,13 +7,13 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
-	<string>nsapplication-example</string>
+	<string>cgeventtap-example</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.pqrs.osx-observer-examples.</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>nsapplication-example</string>
+	<string>cgeventtap-example</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -43,6 +43,6 @@
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
-	<string>ExampleApplication</string>
+	<string>NSApplication</string>
 </dict>
 </plist>

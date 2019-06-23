@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://github.com/tekezo/Karabiner-Elements/blob/master/LICENSE.md)
+
 # osx-event-observer-examples
 
 - nsapplication-example

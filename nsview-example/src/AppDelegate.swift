@@ -4,9 +4,7 @@ import Cocoa
 class AppDelegate: NSObject, NSApplicationDelegate {
   @IBOutlet var window: NSWindow!
 
-  func applicationDidFinishLaunching(_: Notification) {
-  }
+  func applicationDidFinishLaunching(_: Notification) {}
 
-  func applicationWillTerminate(_: Notification) {
-  }
+  func applicationWillTerminate(_: Notification) {}
 }

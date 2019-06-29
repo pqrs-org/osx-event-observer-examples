@@ -14,3 +14,4 @@ dist: all
 	rsync -a cgeventtap-example/build_xcode/build/Release/cgeventtap-example.app dist
 	rsync -a nsapplication-example/build_xcode/build/Release/nsapplication-example.app dist
 	rsync -a nsview-example/build_xcode/build/Release/nsview-example.app dist
+	bash ./scripts/codesign.sh dist

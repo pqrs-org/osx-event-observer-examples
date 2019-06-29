@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>nsview-example</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.pqrs.osx-observer-examples.</string>
+	<string>org.pqrs.osx-observer-examples.nsview-example</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

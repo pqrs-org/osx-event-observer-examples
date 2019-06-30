@@ -1,0 +1,3 @@
+pqrs-org/cpp-osx-iokit_hid_manager
+pqrs-org/cpp-osx-iokit_hid_queue_value_monitor
+pqrs-org/objc-weakify

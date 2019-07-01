@@ -2,10 +2,22 @@
 
 # osx-event-observer-examples
 
+- cgeventtap-example
+  - `CGEventTapCreate`
+- iokit-hid-value-example
+  - `IOHIDQueueRegisterValueAvailableCallback`
 - nsapplication-example
   - `[NSApplication sendEvent]`
 - nsview-example
   - `[NSView keyDown]`
+
+---
+
+## System Requirements
+
+- macOS 10.12 or later
+
+---
 
 ## Building example apps
 
@@ -16,3 +28,17 @@
 ### Instructions
 
 Open terminal and execute `make` command.
+
+---
+
+## Note
+
+User approval of Accessibility is required to use cgeventtap-example.
+(User approval of Input Monitoring is also required since macOS 10.15)
+
+![processes](docs/images/accessibility.png)
+
+User approval of Accessibility and Input Monitoring is required
+to use `iokit-hid-value-example` since macOS 10.15.
+
+![processes](docs/images/input-monitoring.png)

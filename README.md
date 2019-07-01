@@ -8,6 +8,9 @@
   - `IOHIDQueueRegisterValueAvailableCallback`
 - nsapplication-example
   - `[NSApplication sendEvent]`
+- nsevent-example
+  - `[NSEvent addGlobalMonitorForEvents]`
+  - (Equivalent to `CGEventTapCreate` but cannot modify received events)
 - nsview-example
   - `[NSView keyDown]`
 
@@ -33,7 +36,7 @@ Open terminal and execute `make` command.
 
 ## Note
 
-User approval of Accessibility is required to use cgeventtap-example.
+User approval of Accessibility is required to use cgeventtap-example and nsevent-example.
 (User approval of Input Monitoring is also required since macOS 10.15)
 
 ![processes](docs/images/accessibility.png)

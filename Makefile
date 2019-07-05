@@ -13,11 +13,37 @@ clean:
 	make -C nsview-example clean
 
 dist: all
-	rm -rf dist
+	rm -rf osx-event-observer-examples
+	mkdir -p osx-event-observer-examples
+	rsync -aH \
+		cgeventtap-example/build_xcode/build/Release/cgeventtap-example.app \
+		osx-event-observer-examples
+	rsync -aH \
+		iokit-hid-value-example/build_xcode/build/Release/iokit-hid-value-example.app \
+		osx-event-observer-examples
+	rsync -aH \
+		nsapplication-example/build_xcode/build/Release/nsapplication-example.app \
+		osx-event-observer-examples
+	rsync -aH \
+		nsevent-example/build_xcode/build/Release/nsevent-example.app \
+		osx-event-observer-examples
+	rsync -aH \
+		nsview-example/build_xcode/build/Release/nsview-example.app \
+		osx-event-observer-examples
+	bash ./scripts/codesign.sh osx-event-observer-examples
+	hdiutil create -nospotlight osx-event-observer-examples.dmg -srcfolder osx-event-observer-examples -fs 'Journaled HFS+'
+	rm -rf osx-event-observer-examples
 	mkdir -p dist
-	rsync -a cgeventtap-example/build_xcode/build/Release/cgeventtap-example.app dist
-	rsync -a iokit-hid-value-example/build_xcode/build/Release/iokit-hid-value-example.app dist
-	rsync -a nsapplication-example/build_xcode/build/Release/nsapplication-example.app dist
-	rsync -a nsevent-example/build_xcode/build/Release/nsevent-example.app dist
-	rsync -a nsview-example/build_xcode/build/Release/nsview-example.app dist
-	bash ./scripts/codesign.sh dist
+	mv osx-event-observer-examples.dmg dist
+
+notarize:
+	xcrun altool \
+		--notarize-app \
+		-t osx \
+		-f dist/osx-event-observer-examples.dmg \
+		--primary-bundle-id org.pqrs.osx-observer-examples \
+		-u 'tekezo@pqrs.org' \
+		-p '@keychain:pqrs.org-notarize-app'
+
+staple:
+	xcrun stapler staple dist/osx-event-observer-examples.dmg

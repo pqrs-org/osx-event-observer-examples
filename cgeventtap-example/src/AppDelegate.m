@@ -10,6 +10,8 @@
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification {
+  self.window.level = NSFloatingWindowLevel;
+
   NSDictionary* options = @{(__bridge NSString*)(kAXTrustedCheckOptionPrompt) : @YES};
   if (!AXIsProcessTrustedWithOptions((__bridge CFDictionaryRef)options)) {
     self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0
@@ -18,8 +20,6 @@
                                                      [self relaunchIfProcessTrusted];
                                                    }];
   }
-
-  [self.window setLevel:NSFloatingWindowLevel];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)theApplication {

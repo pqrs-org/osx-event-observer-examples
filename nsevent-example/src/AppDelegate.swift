@@ -9,6 +9,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   private var counter: UInt64 = 0
 
   func applicationDidFinishLaunching(_: Notification) {
+    window.level = NSFloatingWindowLevel
+
     let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
     if !AXIsProcessTrustedWithOptions(options) {
       timer = Timer.scheduledTimer(

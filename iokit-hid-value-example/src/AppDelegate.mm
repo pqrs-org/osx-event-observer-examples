@@ -12,11 +12,11 @@
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification*)notification {
+  self.window.level = NSFloatingWindowLevel;
+
   pqrs::dispatcher::extra::initialize_shared_dispatcher();
 
   [self.iokitHIDValueExample initializeIOKitHIDValueExample];
-
-  [self.window setLevel:NSFloatingWindowLevel];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)notification {

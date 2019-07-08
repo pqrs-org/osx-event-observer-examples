@@ -21,7 +21,13 @@
 
 ---
 
-## System Requirements
+## Related documentation
+
+[All about macOS event observation](https://docs.google.com/presentation/d/1nEaiPUduh1vjks0rDVRTcJaEULbSWWh1tVdG2HF_XSU/edit#slide=id.p)
+
+---
+
+## System requirements
 
 - macOS 10.12 or later
 

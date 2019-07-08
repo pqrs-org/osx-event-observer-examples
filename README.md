@@ -4,15 +4,20 @@
 
 - cgeventtap-example
   - `CGEventTapCreate`
+  - ![cgeventtap-example](docs/images/cgeventtap-example.png)
 - iokit-hid-value-example
   - `IOHIDQueueRegisterValueAvailableCallback`
+  - ![iokit-hid-value-example](docs/images/iokit-hid-value-example.png)
 - nsapplication-example
   - `[NSApplication sendEvent]`
+  - ![cgeventtap-example](docs/images/nsapplication-example.png)
 - nsevent-example
   - `[NSEvent addGlobalMonitorForEvents]`
   - (Equivalent to `CGEventTapCreate` but cannot modify received events)
+  - ![nsevent-example](docs/images/nsevent-example.png)
 - nsview-example
   - `[NSView keyDown]`
+  - ![nsview-example](docs/images/nsview-example.png)
 
 ---
 

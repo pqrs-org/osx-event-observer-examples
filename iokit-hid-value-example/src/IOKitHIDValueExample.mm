@@ -66,7 +66,8 @@
       m->values_arrived.connect([self](auto&& values) {
         for (const auto& value_ptr : *values) {
           if (auto e = IOHIDValueGetElement(*value_ptr)) {
-            [self updateEventStrings:[NSString stringWithFormat:@"value: (UsagePage,Usage):(%ld,%ld) %ld",
+            [self updateEventStrings:[NSString stringWithFormat:@"t:%ld value: (UsagePage,Usage):(%ld,%ld) %ld",
+                                                                static_cast<long>(IOHIDValueGetTimeStamp(*value_ptr)),
                                                                 static_cast<long>(IOHIDElementGetUsagePage(e)),
                                                                 static_cast<long>(IOHIDElementGetUsage(e)),
                                                                 static_cast<long>(IOHIDValueGetIntegerValue(*value_ptr))]];

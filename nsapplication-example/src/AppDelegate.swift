@@ -5,7 +5,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   @IBOutlet var window: NSWindow!
 
   func applicationDidFinishLaunching(_: Notification) {
-    window.level = NSFloatingWindowLevel
+    window.level = NSWindow.Level.floating
   }
 
   func applicationWillTerminate(_: Notification) {}

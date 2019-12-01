@@ -9,7 +9,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   private var counter: UInt64 = 0
 
   func applicationDidFinishLaunching(_: Notification) {
-    window.level = NSFloatingWindowLevel
+    window.level = NSWindow.Level.floating
 
     let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as NSString: true]
     if !AXIsProcessTrustedWithOptions(options) {
@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     NSEvent.addGlobalMonitorForEvents(
-      matching: [NSEventMask.keyDown, NSEventMask.keyUp, NSEventMask.flagsChanged],
+      matching: [NSEvent.EventTypeMask.keyDown, NSEvent.EventTypeMask.keyUp, NSEvent.EventTypeMask.flagsChanged],
       handler: { (event: NSEvent) in
         switch event.type {
         case .keyDown:
@@ -47,7 +47,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       let task = Process()
       task.executableURL = URL(fileURLWithPath: Bundle.main.executablePath!)
       try! task.run()
-      NSApplication.shared().terminate(self)
+      NSApplication.shared.terminate(self)
     }
   }
 

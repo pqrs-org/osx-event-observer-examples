@@ -3,6 +3,7 @@
 #import "IOKitHIDValueExample.h"
 #include <pqrs/osx/iokit_hid_manager.hpp>
 #include <pqrs/osx/iokit_hid_queue_value_monitor.hpp>
+#include <pqrs/osx/iokit_hid_value.hpp>
 #include <pqrs/weakify.h>
 
 @interface IOKitHIDValueExample ()
@@ -65,12 +66,16 @@
 
       m->values_arrived.connect([self](auto&& values) {
         for (const auto& value_ptr : *values) {
-          if (auto e = IOHIDValueGetElement(*value_ptr)) {
-            [self updateEventStrings:[NSString stringWithFormat:@"t:%ld value: (UsagePage,Usage):(%ld,%ld) %ld",
-                                                                static_cast<long>(IOHIDValueGetTimeStamp(*value_ptr)),
-                                                                static_cast<long>(IOHIDElementGetUsagePage(e)),
-                                                                static_cast<long>(IOHIDElementGetUsage(e)),
-                                                                static_cast<long>(IOHIDValueGetIntegerValue(*value_ptr))]];
+          pqrs::osx::iokit_hid_value hid_value(*value_ptr);
+
+          if (auto usage_page = hid_value.get_usage_page()) {
+            if (auto usage = hid_value.get_usage()) {
+              [self updateEventStrings:[NSString stringWithFormat:@"t:%lld value: (UsagePage,Usage):(%d,%d) %ld",
+                                                                  type_safe::get(hid_value.get_time_stamp()),
+                                                                  type_safe::get(*usage_page),
+                                                                  type_safe::get(*usage),
+                                                                  static_cast<long>(hid_value.get_integer_value())]];
+            }
           }
         }
       });

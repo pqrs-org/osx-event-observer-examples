@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::osx::iokit_service_monitor v3.6
+// pqrs::osx::iokit_service_monitor v3.7
 
 // (C) Copyright Takayama Fumihiko 2018.
 // Distributed under the Boost Software License, Version 1.0.
@@ -12,6 +12,7 @@
 #include <optional>
 #include <pqrs/cf/run_loop_thread.hpp>
 #include <pqrs/dispatcher.hpp>
+#include <pqrs/osx/iokit_iterator.hpp>
 #include <pqrs/osx/iokit_object_ptr.hpp>
 #include <pqrs/osx/iokit_types.hpp>
 #include <pqrs/osx/kern_return.hpp>
@@ -77,7 +78,7 @@ public:
             error_occurred("IOServiceGetMatchingServices is failed.", r);
           });
         } else {
-          matched_callback(make_services(it));
+          matched_callback(make_services(iokit_iterator(it)));
           IOObjectRelease(it);
         }
       }
@@ -110,7 +111,7 @@ private:
 
     // kIOMatchedNotification
 
-    if (!matched_notification_) {
+    if (!matched_notification_.get()) {
       if (*matching_dictionary_) {
         io_iterator_t it = IO_OBJECT_NULL;
         CFRetain(*matching_dictionary_);
@@ -125,16 +126,16 @@ private:
             error_occurred("IOServiceAddMatchingNotification is failed.", r);
           });
         } else {
-          matched_notification_ = it;
+          matched_notification_ = iokit_iterator(it);
           IOObjectRelease(it);
-          matched_callback(make_services(*matched_notification_));
+          matched_callback(make_services(matched_notification_));
         }
       }
     }
 
     // kIOTerminatedNotification
 
-    if (!terminated_notification_) {
+    if (!terminated_notification_.get()) {
       if (*matching_dictionary_) {
         io_iterator_t it = IO_OBJECT_NULL;
         CFRetain(*matching_dictionary_);
@@ -149,9 +150,9 @@ private:
             error_occurred("IOServiceAddMatchingNotification is failed.", r);
           });
         } else {
-          terminated_notification_ = it;
+          terminated_notification_ = iokit_iterator(it);
           IOObjectRelease(it);
-          terminated_callback(make_services(*terminated_notification_));
+          terminated_callback(make_services(terminated_notification_));
         }
       }
     }
@@ -159,8 +160,8 @@ private:
 
   // This method is executed in cf_run_loop_thread_.
   void stop(void) {
-    matched_notification_.reset();
-    terminated_notification_.reset();
+    matched_notification_ = iokit_iterator();
+    terminated_notification_ = iokit_iterator();
 
     if (notification_port_) {
       if (auto loop_source = IONotificationPortGetRunLoopSource(notification_port_)) {
@@ -180,7 +181,7 @@ private:
       return;
     }
 
-    auto services = make_services(iterator);
+    auto services = make_services(iokit_iterator(iterator));
 
     self->cf_run_loop_thread_->enqueue(^{
       self->matched_callback(services);
@@ -191,7 +192,7 @@ private:
     for (const auto& s : services) {
       if (auto registry_entry_id = find_registry_entry_id(s)) {
         enqueue_to_dispatcher([this, registry_entry_id, s] {
-          service_matched(*registry_entry_id, *s);
+          service_matched(*registry_entry_id, s);
         });
       }
     }
@@ -203,7 +204,7 @@ private:
       return;
     }
 
-    auto services = make_services(iterator);
+    auto services = make_services(iokit_iterator(iterator));
 
     self->cf_run_loop_thread_->enqueue(^{
       self->terminated_callback(services);
@@ -220,17 +221,16 @@ private:
     }
   }
 
-  static std::vector<iokit_object_ptr> make_services(io_iterator_t iterator) {
+  static std::vector<iokit_object_ptr> make_services(const iokit_iterator& iterator) {
     std::vector<iokit_object_ptr> services;
 
-    if (iterator) {
-      while (auto s = IOIteratorNext(iterator)) {
-        if (s) {
-          services.emplace_back(s);
-
-          IOObjectRelease(s);
-        }
+    while (true) {
+      auto next = iterator.next();
+      if (!next) {
+        break;
       }
+
+      services.emplace_back(next);
     }
 
     return services;
@@ -252,8 +252,8 @@ private:
 
   std::unique_ptr<cf::run_loop_thread> cf_run_loop_thread_;
   IONotificationPortRef _Nullable notification_port_;
-  iokit_object_ptr matched_notification_;
-  iokit_object_ptr terminated_notification_;
+  iokit_iterator matched_notification_;
+  iokit_iterator terminated_notification_;
 };
 } // namespace osx
 } // namespace pqrs

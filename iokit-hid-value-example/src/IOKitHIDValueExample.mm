@@ -94,7 +94,7 @@
     self.monitors->erase(registry_entry_id);
   });
 
-  self.hidManager->error_occurred.connect([self](auto&& message, auto&& iokit_return) {
+  self.hidManager->error_occurred.connect([self](auto&& message, auto&& kern_return) {
     [self updateEventStrings:[NSString stringWithFormat:@"error_occurred: %s", message.c_str()]];
   });
 

@@ -30,13 +30,13 @@ set_source_files_properties(
 set_target_properties(
   cgeventtap-example
   PROPERTIES
+
   MACOSX_BUNDLE_INFO_PLIST
   ${CMAKE_CURRENT_LIST_DIR}/Resources/Info.plist
-)
 
-set_target_properties(
-  cgeventtap-example
-  PROPERTIES
+  XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME
+  YES
+
   XCODE_ATTRIBUTE_LD_RUNPATH_SEARCH_PATHS
   "@loader_path @loader_path/../Frameworks"
 )

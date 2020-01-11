@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::osx::iokit_service_monitor v3.7
+// pqrs::osx::iokit_service_monitor v3.8
 
 // (C) Copyright Takayama Fumihiko 2018.
 // Distributed under the Boost Software License, Version 1.0.
@@ -14,6 +14,7 @@
 #include <pqrs/dispatcher.hpp>
 #include <pqrs/osx/iokit_iterator.hpp>
 #include <pqrs/osx/iokit_object_ptr.hpp>
+#include <pqrs/osx/iokit_registry_entry.hpp>
 #include <pqrs/osx/iokit_types.hpp>
 #include <pqrs/osx/kern_return.hpp>
 
@@ -188,11 +189,11 @@ private:
     });
   }
 
-  void matched_callback(const std::vector<iokit_object_ptr>& services) const {
+  void matched_callback(const std::vector<iokit_registry_entry>& services) const {
     for (const auto& s : services) {
-      if (auto registry_entry_id = find_registry_entry_id(s)) {
+      if (auto registry_entry_id = s.find_registry_entry_id()) {
         enqueue_to_dispatcher([this, registry_entry_id, s] {
-          service_matched(*registry_entry_id, s);
+          service_matched(*registry_entry_id, s.get());
         });
       }
     }
@@ -211,9 +212,9 @@ private:
     });
   }
 
-  void terminated_callback(const std::vector<iokit_object_ptr>& services) const {
+  void terminated_callback(const std::vector<iokit_registry_entry>& services) const {
     for (const auto& s : services) {
-      if (auto registry_entry_id = find_registry_entry_id(s)) {
+      if (auto registry_entry_id = s.find_registry_entry_id()) {
         enqueue_to_dispatcher([this, registry_entry_id] {
           service_terminated(*registry_entry_id);
         });
@@ -221,8 +222,8 @@ private:
     }
   }
 
-  static std::vector<iokit_object_ptr> make_services(const iokit_iterator& iterator) {
-    std::vector<iokit_object_ptr> services;
+  static std::vector<iokit_registry_entry> make_services(const iokit_iterator& iterator) {
+    std::vector<iokit_registry_entry> services;
 
     while (true) {
       auto next = iterator.next();
@@ -230,22 +231,10 @@ private:
         break;
       }
 
-      services.emplace_back(next);
+      services.emplace_back(iokit_registry_entry(next));
     }
 
     return services;
-  }
-
-  static std::optional<iokit_registry_entry_id> find_registry_entry_id(iokit_object_ptr service) {
-    if (service) {
-      uint64_t value;
-      kern_return r = IORegistryEntryGetRegistryEntryID(*service, &value);
-      if (r) {
-        return iokit_registry_entry_id(value);
-      }
-    }
-
-    return std::nullopt;
   }
 
   cf::cf_ptr<CFDictionaryRef> matching_dictionary_;

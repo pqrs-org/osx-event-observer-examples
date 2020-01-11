@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::osx::iokit_iterator v1.0
+// pqrs::osx::iokit_iterator v1.1
 
 // (C) Copyright Takayama Fumihiko 2019.
 // Distributed under the Boost Software License, Version 1.0.
@@ -23,7 +23,7 @@ public:
   explicit iokit_iterator(io_iterator_t iterator) : iterator_(iterator) {
   }
 
-  iokit_iterator(const iokit_object_ptr& iterator) : iterator_(iterator) {
+  explicit iokit_iterator(const iokit_object_ptr& iterator) : iterator_(iterator) {
   }
 
   //

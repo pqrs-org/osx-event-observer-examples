@@ -45,14 +45,14 @@
         <window title="iokit-hid-value-example" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="390" width="800" height="240"/>
+            <rect key="contentRect" x="335" y="390" width="1000" height="240"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2048" height="1257"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="800" height="240"/>
+                <rect key="frame" x="0.0" y="0.0" width="1000" height="240"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="jMb-oT-Qq1">
-                        <rect key="frame" x="18" y="20" width="764" height="200"/>
+                        <rect key="frame" x="18" y="20" width="964" height="200"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="8he-GK-def"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="400" id="YwP-ZS-m81"/>

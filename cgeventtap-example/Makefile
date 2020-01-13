@@ -8,4 +8,5 @@ clean:
 	rm -rf build_xcode
 
 run:
+	bash ../scripts/codesign.sh build_xcode/build/Release
 	open build_xcode/build/Release/cgeventtap-example.app

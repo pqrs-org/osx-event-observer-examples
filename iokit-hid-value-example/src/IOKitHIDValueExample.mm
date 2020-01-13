@@ -64,13 +64,14 @@
         [self updateEventStrings:[NSString stringWithFormat:@"stopped: %llu", type_safe::get(registry_entry_id)]];
       });
 
-      m->values_arrived.connect([self](auto&& values) {
+      m->values_arrived.connect([self, registry_entry_id](auto&& values) {
         for (const auto& value_ptr : *values) {
           pqrs::osx::iokit_hid_value hid_value(*value_ptr);
 
           if (auto usage_page = hid_value.get_usage_page()) {
             if (auto usage = hid_value.get_usage()) {
-              [self updateEventStrings:[NSString stringWithFormat:@"t:%lld value: (UsagePage,Usage):(%d,%d) %ld",
+              [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld t:%lld value: (UsagePage,Usage):(%d,%d) %ld",
+                                                                  type_safe::get(registry_entry_id),
                                                                   type_safe::get(hid_value.get_time_stamp()),
                                                                   type_safe::get(*usage_page),
                                                                   type_safe::get(*usage),

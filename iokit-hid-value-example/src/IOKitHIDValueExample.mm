@@ -12,7 +12,7 @@
 @property NSMutableArray<NSString*>* eventStrings;
 @property NSUInteger counter;
 @property std::shared_ptr<pqrs::osx::iokit_hid_manager> hidManager;
-@property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>> monitors;
+@property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>> monitors;
 
 @end
 
@@ -20,20 +20,20 @@
 
 - (void)initializeIOKitHIDValueExample {
   self.eventStrings = [NSMutableArray new];
-  self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>>();
+  self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>>();
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page_generic_desktop,
-          pqrs::osx::iokit_hid_usage_generic_desktop_keyboard),
+          pqrs::osx::iokit_hid_usage_page::generic_desktop,
+          pqrs::osx::iokit_hid_usage::generic_desktop::keyboard),
 
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page_generic_desktop,
-          pqrs::osx::iokit_hid_usage_generic_desktop_mouse),
+          pqrs::osx::iokit_hid_usage_page::generic_desktop,
+          pqrs::osx::iokit_hid_usage::generic_desktop::mouse),
 
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page_generic_desktop,
-          pqrs::osx::iokit_hid_usage_generic_desktop_pointer),
+          pqrs::osx::iokit_hid_usage_page::generic_desktop,
+          pqrs::osx::iokit_hid_usage::generic_desktop::pointer),
   };
 
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),

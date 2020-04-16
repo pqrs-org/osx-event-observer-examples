@@ -24,16 +24,16 @@
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page::generic_desktop,
-          pqrs::osx::iokit_hid_usage::generic_desktop::keyboard),
+          pqrs::hid::usage_page::generic_desktop,
+          pqrs::hid::usage::generic_desktop::keyboard),
 
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page::generic_desktop,
-          pqrs::osx::iokit_hid_usage::generic_desktop::mouse),
+          pqrs::hid::usage_page::generic_desktop,
+          pqrs::hid::usage::generic_desktop::mouse),
 
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
-          pqrs::osx::iokit_hid_usage_page::generic_desktop,
-          pqrs::osx::iokit_hid_usage::generic_desktop::pointer),
+          pqrs::hid::usage_page::generic_desktop,
+          pqrs::hid::usage::generic_desktop::pointer),
   };
 
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),

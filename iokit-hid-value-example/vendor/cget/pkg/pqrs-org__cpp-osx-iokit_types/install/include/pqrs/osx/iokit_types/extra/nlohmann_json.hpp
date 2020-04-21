@@ -20,7 +20,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<uint64_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace iokit_hid_location_id
 
@@ -35,7 +35,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<uint64_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace iokit_keyboard_type
 
@@ -50,7 +50,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<uint64_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace iokit_registry_entry_id
 } // namespace osx

@@ -20,7 +20,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<uint64_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace country_code
 
@@ -35,7 +35,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<uint64_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace product_id
 
@@ -50,7 +50,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<int32_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace usage_page
 
@@ -65,7 +65,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<int32_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace usage
 
@@ -80,7 +80,7 @@ inline void from_json(const nlohmann::json& j, value_t& value) {
     throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
   }
 
-  value = value_t(j.get<uint64_t>());
+  value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
 } // namespace vendor_id
 } // namespace hid

@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::osx::iokit_hid_value v3.2
+// pqrs::osx::iokit_hid_value v3.3
 
 // (C) Copyright Takayama Fumihiko 2019.
 // Distributed under the Boost Software License, Version 1.0.
@@ -33,11 +33,10 @@ public:
     if (value) {
       time_stamp_ = chrono::absolute_time_point(IOHIDValueGetTimeStamp(value));
       integer_value_ = IOHIDValueGetIntegerValue(value);
-      if (auto element = IOHIDValueGetElement(value)) {
-        auto e = iokit_hid_element(element);
-        usage_page_ = e.get_usage_page();
-        usage_ = e.get_usage();
-      }
+
+      auto e = iokit_hid_element(IOHIDValueGetElement(value));
+      usage_page_ = e.get_usage_page();
+      usage_ = e.get_usage();
     }
   }
 

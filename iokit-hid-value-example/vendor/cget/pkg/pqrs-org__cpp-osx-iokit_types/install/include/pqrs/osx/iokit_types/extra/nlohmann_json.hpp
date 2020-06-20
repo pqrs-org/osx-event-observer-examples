@@ -15,10 +15,7 @@ inline void to_json(nlohmann::json& j, const value_t& value) {
 }
 
 inline void from_json(const nlohmann::json& j, value_t& value) {
-  if (!j.is_number()) {
-    using namespace std::string_literals;
-    throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
-  }
+  json::requires_number(j, "json");
 
   value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
@@ -30,10 +27,7 @@ inline void to_json(nlohmann::json& j, const value_t& value) {
 }
 
 inline void from_json(const nlohmann::json& j, value_t& value) {
-  if (!j.is_number()) {
-    using namespace std::string_literals;
-    throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
-  }
+  json::requires_number(j, "json");
 
   value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }
@@ -45,10 +39,7 @@ inline void to_json(nlohmann::json& j, const value_t& value) {
 }
 
 inline void from_json(const nlohmann::json& j, value_t& value) {
-  if (!j.is_number()) {
-    using namespace std::string_literals;
-    throw json::unmarshal_error("json must be number, but is `"s + j.dump() + "`"s);
-  }
+  json::requires_number(j, "json");
 
   value = value_t(j.get<type_safe::underlying_type<value_t>>());
 }

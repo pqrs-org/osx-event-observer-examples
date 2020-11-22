@@ -1,6 +1,6 @@
 /* -*- mode: objective-c -*- */
 
-@import Cocoa;
+#import <Cocoa/Cocoa.h>
 
 @interface IOKitHIDValueExample : NSObject
 

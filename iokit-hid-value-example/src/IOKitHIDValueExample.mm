@@ -1,4 +1,4 @@
-@import CoreGraphics;
+#import <CoreGraphics/CoreGraphics.h>
 
 #import "IOKitHIDValueExample.h"
 #include <pqrs/osx/iokit_hid_manager.hpp>

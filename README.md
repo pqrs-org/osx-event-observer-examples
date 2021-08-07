@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://github.com/pqrs-org/osx-event-observer-examples/blob/master/LICENSE.md)
+[![License](https://img.shields.io/badge/license-Public%20Domain-blue.svg)](https://github.com/pqrs-org/osx-event-observer-examples/blob/main/LICENSE.md)
 
 # osx-event-observer-examples
 

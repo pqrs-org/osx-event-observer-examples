@@ -37,13 +37,12 @@ dist: all
 	mv osx-event-observer-examples.dmg dist
 
 notarize:
-	xcrun altool \
-		--notarize-app \
-		-t osx \
-		-f dist/osx-event-observer-examples.dmg \
-		--primary-bundle-id org.pqrs.osx-observer-examples \
-		-u 'tekezo@pqrs.org' \
-		-p '@keychain:pqrs.org-notarize-app'
+	xcrun notarytool \
+		submit dist/osx-event-observer-examples.dmg \
+		--keychain-profile "pqrs.org notarization" \
+		--wait
+	$(MAKE) staple
+	say "notarization completed"
 
 staple:
 	xcrun stapler staple dist/osx-event-observer-examples.dmg

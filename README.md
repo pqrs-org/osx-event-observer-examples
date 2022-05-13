@@ -29,7 +29,7 @@
 
 ## System requirements
 
-- macOS 10.12 or later
+- macOS 10.13 or later
 
 ---
 

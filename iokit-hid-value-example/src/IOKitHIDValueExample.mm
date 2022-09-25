@@ -40,14 +40,18 @@
                                                                    matching_dictionaries);
   self.hidManager->device_matched.connect([self](auto&& registry_entry_id, auto&& device_ptr) {
     if (device_ptr) {
+      std::string device_name;
+
       {
         auto d = pqrs::osx::iokit_hid_device(*device_ptr);
 
         [self updateEventStrings:@"device matched"];
         if (auto manufacturer = d.find_string_property(CFSTR(kIOHIDManufacturerKey))) {
+          device_name += *manufacturer + " ";
           [self updateEventStrings:[NSString stringWithFormat:@"    manufacturer:%s", manufacturer->c_str()]];
         }
         if (auto product = d.find_string_property(CFSTR(kIOHIDProductKey))) {
+          device_name += *product;
           [self updateEventStrings:[NSString stringWithFormat:@"    product:%s", product->c_str()]];
         }
       }
@@ -56,12 +60,16 @@
                                                                           *device_ptr);
       (*self.monitors)[registry_entry_id] = m;
 
-      m->started.connect([self, registry_entry_id] {
-        [self updateEventStrings:[NSString stringWithFormat:@"started: %llu", type_safe::get(registry_entry_id)]];
+      m->started.connect([self, registry_entry_id, device_name] {
+        [self updateEventStrings:[NSString stringWithFormat:@"started: %llu %s",
+                                                            type_safe::get(registry_entry_id),
+                                                            device_name.c_str()]];
       });
 
-      m->stopped.connect([self, registry_entry_id] {
-        [self updateEventStrings:[NSString stringWithFormat:@"stopped: %llu", type_safe::get(registry_entry_id)]];
+      m->stopped.connect([self, registry_entry_id, device_name] {
+        [self updateEventStrings:[NSString stringWithFormat:@"stopped: %llu %s",
+                                                            type_safe::get(registry_entry_id),
+                                                            device_name.c_str()]];
       });
 
       m->values_arrived.connect([self, registry_entry_id](auto&& values) {
@@ -81,8 +89,11 @@
         }
       });
 
-      m->error_occurred.connect([self](auto&& message, auto&& iokit_return) {
-        [self updateEventStrings:[NSString stringWithFormat:@"error_occurred: %s", message.c_str()]];
+      m->error_occurred.connect([self, device_name](auto&& message, auto&& iokit_return) {
+        [self updateEventStrings:[NSString stringWithFormat:@"error_occurred: %s %s %s",
+                                                            message.c_str(),
+                                                            iokit_return.to_string().c_str(),
+                                                            device_name.c_str()]];
       });
 
       m->async_start(kIOHIDOptionsTypeNone,

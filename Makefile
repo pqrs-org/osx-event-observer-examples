@@ -16,19 +16,19 @@ dist: all
 	rm -rf osx-event-observer-examples
 	mkdir -p osx-event-observer-examples
 	rsync -aH \
-		cgeventtap-example/build_xcode/build/Release/cgeventtap-example.app \
+		cgeventtap-example/build_xcode/Release/cgeventtap-example.app \
 		osx-event-observer-examples
 	rsync -aH \
-		iokit-hid-value-example/build_xcode/build/Release/iokit-hid-value-example.app \
+		iokit-hid-value-example/build_xcode/Release/iokit-hid-value-example.app \
 		osx-event-observer-examples
 	rsync -aH \
-		nsapplication-example/build_xcode/build/Release/nsapplication-example.app \
+		nsapplication-example/build_xcode/Release/nsapplication-example.app \
 		osx-event-observer-examples
 	rsync -aH \
-		nsevent-example/build_xcode/build/Release/nsevent-example.app \
+		nsevent-example/build_xcode/Release/nsevent-example.app \
 		osx-event-observer-examples
 	rsync -aH \
-		nsview-example/build_xcode/build/Release/nsview-example.app \
+		nsview-example/build_xcode/Release/nsview-example.app \
 		osx-event-observer-examples
 	bash ./scripts/codesign.sh osx-event-observer-examples
 	hdiutil create -nospotlight osx-event-observer-examples.dmg -srcfolder osx-event-observer-examples -fs 'Journaled HFS+'

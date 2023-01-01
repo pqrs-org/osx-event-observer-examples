@@ -21,6 +21,7 @@
 
 - (void)initializeIOKitHIDValueExample {
   self.eventStrings = [NSMutableArray new];
+  self.runLoopThread = std::make_shared<pqrs::cf::run_loop_thread>();
   self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>>();
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
@@ -37,7 +38,6 @@
           pqrs::hid::usage::generic_desktop::pointer),
   };
 
-  self.runLoopThread = std::make_shared<pqrs::cf::run_loop_thread>();
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
                                                                    self.runLoopThread,
                                                                    matching_dictionaries);
@@ -60,6 +60,7 @@
       }
 
       auto m = std::make_shared<pqrs::osx::iokit_hid_queue_value_monitor>(pqrs::dispatcher::extra::get_shared_dispatcher(),
+                                                                          self.runLoopThread,
                                                                           *device_ptr);
       (*self.monitors)[registry_entry_id] = m;
 
@@ -119,10 +120,10 @@
 - (void)terminateIOKitHIDValueExample {
   self.monitors->clear();
 
+  self.hidManager = nullptr;
+
   self.runLoopThread->terminate();
   self.runLoopThread = nullptr;
-
-  self.hidManager = nullptr;
 }
 
 - (void)updateEventStrings:(NSString*)string {

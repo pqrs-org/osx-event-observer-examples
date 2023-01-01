@@ -11,6 +11,7 @@
 @property(weak) IBOutlet NSTextField* text;
 @property NSMutableArray<NSString*>* eventStrings;
 @property NSUInteger counter;
+@property std::shared_ptr<pqrs::cf::run_loop_thread> runLoopThread;
 @property std::shared_ptr<pqrs::osx::iokit_hid_manager> hidManager;
 @property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>> monitors;
 
@@ -36,7 +37,9 @@
           pqrs::hid::usage::generic_desktop::pointer),
   };
 
+  self.runLoopThread = std::make_shared<pqrs::cf::run_loop_thread>();
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
+                                                                   self.runLoopThread,
                                                                    matching_dictionaries);
   self.hidManager->device_matched.connect([self](auto&& registry_entry_id, auto&& device_ptr) {
     if (device_ptr) {
@@ -115,6 +118,10 @@
 
 - (void)terminateIOKitHIDValueExample {
   self.monitors->clear();
+
+  self.runLoopThread->terminate();
+  self.runLoopThread = nullptr;
+
   self.hidManager = nullptr;
 }
 

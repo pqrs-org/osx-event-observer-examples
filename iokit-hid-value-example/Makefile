@@ -2,14 +2,14 @@ all:
 	mkdir -p build_xcode \
 		&& cd build_xcode \
 		&& cmake -G Xcode .. \
-		&& xcodebuild -configuration Release SYMROOT="$(CURDIR)/build_xcode/build"
+		&& xcodebuild -configuration Release SYMROOT="$(CURDIR)/build_xcode"
 
 clean:
 	rm -rf build_xcode
 
 run:
-	bash ../scripts/codesign.sh build_xcode/build/Release
-	open build_xcode/build/Release/iokit-hid-value-example.app
+	bash ../scripts/codesign.sh build_xcode/Release
+	open build_xcode/Release/iokit-hid-value-example.app
 
 update_vendor:
 	rm -rf vendor

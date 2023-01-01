@@ -12,7 +12,7 @@ clean:
 	make -C nsevent-example clean
 	make -C nsview-example clean
 
-dist: all
+dist: clean all
 	rm -rf osx-event-observer-examples
 	mkdir -p osx-event-observer-examples
 	rsync -aH \

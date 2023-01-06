@@ -11,7 +11,6 @@
 @property(weak) IBOutlet NSTextField* text;
 @property NSMutableArray<NSString*>* eventStrings;
 @property NSUInteger counter;
-@property std::shared_ptr<pqrs::cf::run_loop_thread> runLoopThread;
 @property std::shared_ptr<pqrs::osx::iokit_hid_manager> hidManager;
 @property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>> monitors;
 
@@ -21,7 +20,6 @@
 
 - (void)initializeIOKitHIDValueExample {
   self.eventStrings = [NSMutableArray new];
-  self.runLoopThread = std::make_shared<pqrs::cf::run_loop_thread>();
   self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>>();
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
@@ -39,7 +37,7 @@
   };
 
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),
-                                                                   self.runLoopThread,
+                                                                   pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread(),
                                                                    matching_dictionaries);
   self.hidManager->device_matched.connect([self](auto&& registry_entry_id, auto&& device_ptr) {
     if (device_ptr) {
@@ -60,7 +58,7 @@
       }
 
       auto m = std::make_shared<pqrs::osx::iokit_hid_queue_value_monitor>(pqrs::dispatcher::extra::get_shared_dispatcher(),
-                                                                          self.runLoopThread,
+                                                                          pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread(),
                                                                           *device_ptr);
       (*self.monitors)[registry_entry_id] = m;
 
@@ -121,9 +119,6 @@
   self.monitors->clear();
 
   self.hidManager = nullptr;
-
-  self.runLoopThread->terminate();
-  self.runLoopThread = nullptr;
 }
 
 - (void)updateEventStrings:(NSString*)string {

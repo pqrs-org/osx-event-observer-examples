@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 #import "IOKitHIDValueExample.h"
+#include <pqrs/cf/run_loop_thread.hpp>
 #include <pqrs/dispatcher.hpp>
 
 @interface AppDelegate ()
@@ -15,6 +16,7 @@
   self.window.level = NSFloatingWindowLevel;
 
   pqrs::dispatcher::extra::initialize_shared_dispatcher();
+  pqrs::cf::run_loop_thread::extra::initialize_shared_run_loop_thread();
 
   [self.iokitHIDValueExample initializeIOKitHIDValueExample];
 }
@@ -22,6 +24,7 @@
 - (void)applicationWillTerminate:(NSNotification*)notification {
   [self.iokitHIDValueExample terminateIOKitHIDValueExample];
 
+  pqrs::cf::run_loop_thread::extra::terminate_shared_run_loop_thread();
   pqrs::dispatcher::extra::terminate_shared_dispatcher();
 }
 

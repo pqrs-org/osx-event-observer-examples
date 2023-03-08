@@ -1,5 +1,6 @@
 all:
 	make -C cgeventtap-example
+	make -C iokit-hid-report-example
 	make -C iokit-hid-value-example
 	make -C nsapplication-example
 	make -C nsevent-example
@@ -7,6 +8,7 @@ all:
 
 clean:
 	make -C cgeventtap-example clean
+	make -C iokit-hid-report-example clean
 	make -C iokit-hid-value-example clean
 	make -C nsapplication-example clean
 	make -C nsevent-example clean
@@ -17,6 +19,9 @@ dist: clean all
 	mkdir -p osx-event-observer-examples
 	rsync -aH \
 		cgeventtap-example/build_xcode/Release/cgeventtap-example.app \
+		osx-event-observer-examples
+	rsync -aH \
+		iokit-hid-report-example/build_xcode/Release/iokit-hid-report-example.app \
 		osx-event-observer-examples
 	rsync -aH \
 		iokit-hid-value-example/build_xcode/Release/iokit-hid-value-example.app \

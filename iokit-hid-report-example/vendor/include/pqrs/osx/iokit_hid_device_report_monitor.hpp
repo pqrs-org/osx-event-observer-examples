@@ -1,0 +1,1 @@
+../../../cget/pkg/pqrs-org__cpp-osx-iokit_hid_device_report_monitor/install/include/pqrs/osx/iokit_hid_device_report_monitor.hpp

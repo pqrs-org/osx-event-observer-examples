@@ -5,6 +5,9 @@
 - cgeventtap-example
   - `CGEventTapCreate`
   - ![cgeventtap-example](docs/images/cgeventtap-example.png)
+- iokit-hid-report-example
+  - `IOHIDDeviceRegisterInputReportCallback`
+  - ![iokit-hid-report-example](docs/images/iokit-hid-report-example.png)
 - iokit-hid-value-example
   - `IOHIDQueueRegisterValueAvailableCallback`
   - ![iokit-hid-value-example](docs/images/iokit-hid-value-example.png)

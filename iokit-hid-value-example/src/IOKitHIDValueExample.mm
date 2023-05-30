@@ -34,6 +34,14 @@
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
           pqrs::hid::usage_page::generic_desktop,
           pqrs::hid::usage::generic_desktop::pointer),
+
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::hid::usage_page::generic_desktop,
+          pqrs::hid::usage::generic_desktop::joystick),
+
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::hid::usage_page::generic_desktop,
+          pqrs::hid::usage::generic_desktop::game_pad),
   };
 
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),

@@ -346,10 +346,7 @@ constexpr value_t volume_decrement(0x00ea);
 
 // application launch buttons
 
-// AL Consumer Control Configuration (0x0183) is used as open music player.
-// - https://github.com/pqrs-org/cpp-hid/pull/1
-// - https://source.android.com/docs/core/interaction/input/keyboard-devices
-constexpr value_t al_music_player(0x0183);
+constexpr value_t al_consumer_control_configuration(0x0183);
 constexpr value_t al_word_processor(0x0184);
 constexpr value_t al_text_editor(0x0185);
 constexpr value_t al_spreadsheet(0x0186);

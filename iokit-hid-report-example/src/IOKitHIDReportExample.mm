@@ -1,6 +1,7 @@
 #import <CoreGraphics/CoreGraphics.h>
 
 #import "IOKitHIDReportExample.h"
+#include <iomanip>
 #include <pqrs/osx/iokit_hid_device_report_monitor.hpp>
 #include <pqrs/osx/iokit_hid_manager.hpp>
 #include <pqrs/weakify.h>
@@ -82,11 +83,23 @@
       });
 
       m->report_arrived.connect([self, registry_entry_id](auto&& type, auto&& report_id, auto&& report_buffer) {
-        [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld type:%d report_id:%d report_buffer.size():%ld",
+        std::stringstream hex;
+        for (size_t i = 0; i < report_buffer->size(); ++i) {
+          if (i > 0) {
+            hex << ":";
+          }
+          hex << std::hex
+              << std::setfill('0')
+              << std::setw(2)
+              << static_cast<int>((*report_buffer)[i]);
+        }
+
+        [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld type:%d report_id:%d report_buffer.size():%ld buffer:%s",
                                                             type_safe::get(registry_entry_id),
                                                             type,
                                                             report_id,
-                                                            report_buffer->size()]];
+                                                            report_buffer->size(),
+                                                            hex.str().c_str()]];
       });
 
       m->error_occurred.connect([self, device_name](auto&& message, auto&& iokit_return) {

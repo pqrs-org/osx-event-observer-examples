@@ -42,6 +42,16 @@
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
           pqrs::hid::usage_page::generic_desktop,
           pqrs::hid::usage::generic_desktop::game_pad),
+
+      // Headset
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::hid::usage_page::consumer,
+          pqrs::hid::usage::consumer::consumer_control),
+
+      // Special devices
+      pqrs::osx::iokit_hid_manager::make_matching_dictionary(
+          pqrs::hid::usage_page::consumer,
+          pqrs::hid::usage::consumer::programmable_buttons),
   };
 
   self.hidManager = std::make_shared<pqrs::osx::iokit_hid_manager>(pqrs::dispatcher::extra::get_shared_dispatcher(),

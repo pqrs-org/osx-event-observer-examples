@@ -54,3 +54,5 @@ staple:
 
 check-staple:
 	xcrun stapler validate dist/osx-event-observer-examples.dmg
+
+notarized-dmg: dist notarize

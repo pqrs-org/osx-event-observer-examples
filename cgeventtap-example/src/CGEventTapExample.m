@@ -85,7 +85,8 @@ static CGEventRef callback(CGEventTapProxy proxy,
       break;
 
     case kCGEventFlagsChanged:
-      [self updateEventStrings:[NSString stringWithFormat:@"flagsChanged 0x%llx pid:%lld",
+      [self updateEventStrings:[NSString stringWithFormat:@"flagsChanged %lld flags:0x%llx pid:%lld",
+                                                          CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetFlags(event),
                                                           CGEventGetIntegerValueField(event, kCGEventSourceUnixProcessID)]];
       break;

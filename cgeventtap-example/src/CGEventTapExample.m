@@ -74,18 +74,21 @@ static CGEventRef callback(CGEventTapProxy proxy,
       break;
 
     case kCGEventKeyDown:
-      [self updateEventStrings:[NSString stringWithFormat:@"keyDown %lld pid:%lld",
+      [self updateEventStrings:[NSString stringWithFormat:@"keyDown %lld (0x%llx) pid:%lld",
+                                                          CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetIntegerValueField(event, kCGEventSourceUnixProcessID)]];
       break;
     case kCGEventKeyUp:
-      [self updateEventStrings:[NSString stringWithFormat:@"keyUp %lld pid:%lld",
+      [self updateEventStrings:[NSString stringWithFormat:@"keyUp %lld (0x%llx) pid:%lld",
+                                                          CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetIntegerValueField(event, kCGEventSourceUnixProcessID)]];
       break;
 
     case kCGEventFlagsChanged:
-      [self updateEventStrings:[NSString stringWithFormat:@"flagsChanged %lld flags:0x%llx pid:%lld",
+      [self updateEventStrings:[NSString stringWithFormat:@"flagsChanged %lld (0x%llx) flags:0x%llx pid:%lld",
+                                                          CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetIntegerValueField(event, kCGKeyboardEventKeycode),
                                                           CGEventGetFlags(event),
                                                           CGEventGetIntegerValueField(event, kCGEventSourceUnixProcessID)]];

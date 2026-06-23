@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::osx::iokit_hid_device_report_monitor v1.1
+// pqrs::osx::iokit_hid_device_report_monitor v1.2.0
 
 // (C) Copyright Takayama Fumihiko 2022.
 // Distributed under the Boost Software License, Version 1.0.
@@ -8,23 +8,29 @@
 
 #include <IOKit/hid/IOHIDDevice.h>
 #include <chrono>
+#include <cstdint>
+#include <cstring>
+#include <memory>
+#include <mutex>
 #include <nod/nod.hpp>
 #include <optional>
 #include <pqrs/cf/run_loop_thread.hpp>
 #include <pqrs/dispatcher.hpp>
+#include <pqrs/gsl.hpp>
 #include <pqrs/osx/iokit_hid_device.hpp>
 #include <pqrs/osx/iokit_return.hpp>
 #include <pqrs/osx/iokit_types.hpp>
+#include <string>
+#include <vector>
 
-namespace pqrs {
-namespace osx {
+namespace pqrs::osx {
 class iokit_hid_device_report_monitor final : public dispatcher::extra::dispatcher_client {
 public:
   // Signals (invoked from the dispatcher thread)
 
-  nod::signal<void(void)> started;
-  nod::signal<void(void)> stopped;
-  nod::signal<void(IOHIDReportType type, uint32_t report_id, std::shared_ptr<std::vector<uint8_t>> report_buffer)> report_arrived;
+  nod::signal<void()> started;
+  nod::signal<void()> stopped;
+  nod::signal<void(IOHIDReportType type, uint32_t report_id, not_null_shared_ptr_t<std::vector<uint8_t>> report_buffer)> report_arrived;
   nod::signal<void(const std::string&, iokit_return)> error_occurred;
 
   // Methods
@@ -35,7 +41,7 @@ public:
   // If such a condition occurs, cf::run_loop_thread detects it and calls abort to avoid it.
   // However, to avoid the problem itself, cf::run_loop_thread should be provided externally instead of having it internally.
   iokit_hid_device_report_monitor(std::weak_ptr<dispatcher::dispatcher> weak_dispatcher,
-                                  std::shared_ptr<cf::run_loop_thread> run_loop_thread,
+                                  not_null_shared_ptr_t<cf::run_loop_thread> run_loop_thread,
                                   IOHIDDeviceRef device)
       : dispatcher_client(weak_dispatcher),
         run_loop_thread_(run_loop_thread),
@@ -76,7 +82,7 @@ public:
     wait->wait_notice();
   }
 
-  virtual ~iokit_hid_device_report_monitor(void) {
+  ~iokit_hid_device_report_monitor() override {
     //
     // dispatcher_client
     //
@@ -123,7 +129,7 @@ public:
     });
   }
 
-  void async_stop(void) {
+  void async_stop() {
     {
       std::lock_guard<std::mutex> lock(open_options_mutex_);
 
@@ -135,7 +141,7 @@ public:
     });
   }
 
-  bool seized() const {
+  [[nodiscard]] bool seized() const {
     std::lock_guard<std::mutex> lock(open_options_mutex_);
 
     return current_open_options_ != std::nullopt
@@ -144,7 +150,7 @@ public:
   }
 
 private:
-  void start(void) {
+  void start() {
     bool needs_stop = false;
     IOOptionBits open_options = kIOHIDOptionsTypeNone;
 
@@ -279,7 +285,7 @@ private:
 
   static void static_device_removal_callback(void* context,
                                              IOReturn result,
-                                             void* sender) {
+                                             [[maybe_unused]] void* sender) {
     if (result != kIOReturnSuccess) {
       return;
     }
@@ -292,13 +298,13 @@ private:
     self->device_removal_callback();
   }
 
-  void device_removal_callback(void) {
+  void device_removal_callback() {
     stop({.check_requested_open_options = false});
   }
 
   static void static_input_report_callback(void* context,
                                            IOReturn result,
-                                           void* sender,
+                                           [[maybe_unused]] void* sender,
                                            IOHIDReportType type,
                                            uint32_t report_id,
                                            uint8_t* report,
@@ -322,19 +328,26 @@ private:
                              CFIndex report_length) {
     pqrs::osx::iokit_return r = result;
     if (!r) {
-      error_occurred("input report callback error", r);
+      enqueue_to_dispatcher([this, r] {
+        error_occurred("input report callback error", r);
+      });
       return;
     }
 
-    auto buffer = std::make_shared<std::vector<uint8_t>>(report_length);
-    memcpy(&((*buffer)[0]), report, report_length);
+    auto buffer = not_null_shared_ptr_t<std::vector<uint8_t>>(std::make_shared<std::vector<uint8_t>>());
+    if (report && report_length > 0) {
+      buffer->resize(static_cast<std::size_t>(report_length));
+      std::memcpy(buffer->data(),
+                  report,
+                  buffer->size());
+    }
 
     enqueue_to_dispatcher([this, type, report_id, buffer] {
       report_arrived(type, report_id, buffer);
     });
   }
 
-  std::shared_ptr<cf::run_loop_thread> run_loop_thread_;
+  not_null_shared_ptr_t<cf::run_loop_thread> run_loop_thread_;
 
   iokit_hid_device hid_device_;
   dispatcher::extra::timer open_timer_;
@@ -344,5 +357,4 @@ private:
   iokit_return last_open_error_;
   std::vector<uint8_t> report_buffer_;
 };
-} // namespace osx
-} // namespace pqrs
+} // namespace pqrs::osx

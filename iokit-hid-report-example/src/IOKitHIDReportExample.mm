@@ -2,7 +2,7 @@
 
 #import "IOKitHIDReportExample.h"
 #include <iomanip>
-#include <pqrs/osx/iokit_hid_device_report_monitor.hpp>
+#include <pqrs/osx/iokit_hid_device_events_monitor.hpp>
 #include <pqrs/osx/iokit_hid_manager.hpp>
 #include <pqrs/weakify.h>
 
@@ -12,7 +12,7 @@
 @property NSMutableArray<NSString*>* eventStrings;
 @property NSUInteger counter;
 @property std::shared_ptr<pqrs::osx::iokit_hid_manager> hidManager;
-@property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_device_report_monitor>>> monitors;
+@property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_device_events_monitor>>> monitors;
 
 @end
 
@@ -20,7 +20,7 @@
 
 - (void)initializeIOKitHIDReportExample {
   self.eventStrings = [NSMutableArray new];
-  self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_device_report_monitor>>>();
+  self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_device_events_monitor>>>();
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
@@ -75,9 +75,14 @@
         }
       }
 
-      auto m = std::make_shared<pqrs::osx::iokit_hid_device_report_monitor>(pqrs::dispatcher::extra::get_shared_dispatcher(),
-                                                                            pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread(),
-                                                                            *device_ptr);
+      auto m = std::make_shared<pqrs::osx::iokit_hid_device_events_monitor>(
+          pqrs::dispatcher::extra::get_shared_dispatcher(),
+          pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread(),
+          *device_ptr,
+          pqrs::osx::iokit_hid_device_events_monitor::parameters{
+              .observe_input_values = false,
+              .observe_input_reports = true,
+          });
       (*self.monitors)[registry_entry_id] = m;
 
       m->started.connect([self, registry_entry_id, device_name] {
@@ -92,23 +97,23 @@
                                                             device_name.c_str()]];
       });
 
-      m->report_arrived.connect([self, registry_entry_id](auto&& type, auto&& report_id, auto&& report_buffer) {
+      m->input_report_arrived.connect([self, registry_entry_id](auto&& report_id, auto&& report) {
         std::stringstream hex;
-        for (size_t i = 0; i < report_buffer->size(); ++i) {
+        for (size_t i = 0; i < report.size(); ++i) {
           if (i > 0) {
             hex << ":";
           }
           hex << std::hex
               << std::setfill('0')
               << std::setw(2)
-              << static_cast<int>((*report_buffer)[i]);
+              << static_cast<int>(report[i]);
         }
 
-        [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld type:%d report_id:%d report_buffer.size():%ld buffer:%s",
+        [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld type:%d report_id:%d report.size():%lu buffer:%s",
                                                             type_safe::get(registry_entry_id),
-                                                            type,
+                                                            kIOHIDReportTypeInput,
                                                             report_id,
-                                                            report_buffer->size(),
+                                                            static_cast<unsigned long>(report.size()),
                                                             hex.str().c_str()]];
       });
 

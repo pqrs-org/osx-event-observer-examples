@@ -2,7 +2,7 @@
 
 #import "IOKitHIDValueExample.h"
 #include <pqrs/osx/iokit_hid_manager.hpp>
-#include <pqrs/osx/iokit_hid_queue_value_monitor.hpp>
+#include <pqrs/osx/iokit_hid_device_events_monitor.hpp>
 #include <pqrs/osx/iokit_hid_value.hpp>
 #include <pqrs/weakify.h>
 
@@ -12,7 +12,7 @@
 @property NSMutableArray<NSString*>* eventStrings;
 @property NSUInteger counter;
 @property std::shared_ptr<pqrs::osx::iokit_hid_manager> hidManager;
-@property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>> monitors;
+@property std::shared_ptr<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_device_events_monitor>>> monitors;
 
 @end
 
@@ -20,7 +20,7 @@
 
 - (void)initializeIOKitHIDValueExample {
   self.eventStrings = [NSMutableArray new];
-  self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_queue_value_monitor>>>();
+  self.monitors = std::make_shared<std::unordered_map<pqrs::osx::iokit_registry_entry_id::value_t, std::shared_ptr<pqrs::osx::iokit_hid_device_events_monitor>>>();
 
   std::vector<pqrs::cf::cf_ptr<CFDictionaryRef>> matching_dictionaries{
       pqrs::osx::iokit_hid_manager::make_matching_dictionary(
@@ -75,9 +75,9 @@
         }
       }
 
-      auto m = std::make_shared<pqrs::osx::iokit_hid_queue_value_monitor>(pqrs::dispatcher::extra::get_shared_dispatcher(),
-                                                                          pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread(),
-                                                                          *device_ptr);
+      auto m = std::make_shared<pqrs::osx::iokit_hid_device_events_monitor>(pqrs::dispatcher::extra::get_shared_dispatcher(),
+                                                                            pqrs::cf::run_loop_thread::extra::get_shared_run_loop_thread(),
+                                                                            *device_ptr);
       (*self.monitors)[registry_entry_id] = m;
 
       m->started.connect([self, registry_entry_id, device_name] {
@@ -92,7 +92,7 @@
                                                             device_name.c_str()]];
       });
 
-      m->values_arrived.connect([self, registry_entry_id](auto&& values) {
+      m->input_values_arrived.connect([self, registry_entry_id](auto&& values) {
         for (const auto& value_ptr : *values) {
           pqrs::osx::iokit_hid_value hid_value(*value_ptr);
 

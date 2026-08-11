@@ -1,8 +1,8 @@
 #import <CoreGraphics/CoreGraphics.h>
 
 #import "IOKitHIDValueExample.h"
-#include <pqrs/osx/iokit_hid_manager.hpp>
 #include <pqrs/osx/iokit_hid_device_events_monitor.hpp>
+#include <pqrs/osx/iokit_hid_manager.hpp>
 #include <pqrs/osx/iokit_hid_value.hpp>
 #include <pqrs/weakify.h>
 

@@ -1,3 +1,10 @@
+CLANG_FORMAT_FILES = \
+        '*.h' \
+        '*.hpp' \
+        '*.mm' \
+        '*.cpp' \
+        ':(exclude)vendor/**'
+
 all:
 	make -C cgeventtap-example
 	make -C iokit-hid-report-example
@@ -56,3 +63,14 @@ check-staple:
 	xcrun stapler validate dist/osx-event-observer-examples.dmg
 
 notarized-dmg: dist notarize
+
+format: clang-format swift-format swiftlint
+
+clang-format:
+	git ls-files -z -- $(CLANG_FORMAT_FILES) | xargs -0 clang-format -i
+
+swift-format:
+	git ls-files -z -- '*.swift' | xargs -0 swift-format -i
+
+swiftlint:
+	swiftlint

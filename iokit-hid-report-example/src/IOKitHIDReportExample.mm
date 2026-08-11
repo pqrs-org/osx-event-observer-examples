@@ -97,7 +97,7 @@
                                                             device_name.c_str()]];
       });
 
-      m->input_report_arrived.connect([self, registry_entry_id](auto&& report_id, auto&& report) {
+      m->input_report_arrived.connect([self, registry_entry_id](auto&& report_id, auto&& report, auto&& time_stamp) {
         std::stringstream hex;
         for (size_t i = 0; i < report.size(); ++i) {
           if (i > 0) {
@@ -109,8 +109,9 @@
               << static_cast<int>(report[i]);
         }
 
-        [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld type:%d report_id:%d report.size():%lu buffer:%s",
+        [self updateEventStrings:[NSString stringWithFormat:@"eid:%lld t:%llu type:%d report_id:%d report.size():%lu buffer:%s",
                                                             type_safe::get(registry_entry_id),
+                                                            type_safe::get(time_stamp),
                                                             kIOHIDReportTypeInput,
                                                             report_id,
                                                             static_cast<unsigned long>(report.size()),

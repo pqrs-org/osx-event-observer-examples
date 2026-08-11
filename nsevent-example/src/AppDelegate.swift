@@ -20,7 +20,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     NSEvent.addGlobalMonitorForEvents(
-      matching: [NSEvent.EventTypeMask.keyDown, NSEvent.EventTypeMask.keyUp, NSEvent.EventTypeMask.flagsChanged],
+      matching: [
+        NSEvent.EventTypeMask.keyDown, NSEvent.EventTypeMask.keyUp,
+        NSEvent.EventTypeMask.flagsChanged,
+      ],
       handler: { (event: NSEvent) in
         switch event.type {
         case .keyDown:
@@ -44,10 +47,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   private func relaunchIfProcessTrusted() {
     if AXIsProcessTrusted() {
+      guard let executablePath = Bundle.main.executablePath else {
+        return
+      }
+
       let task = Process()
-      task.executableURL = URL(fileURLWithPath: Bundle.main.executablePath!)
-      try! task.run()
-      NSApplication.shared.terminate(self)
+      task.executableURL = URL(fileURLWithPath: executablePath)
+
+      do {
+        try task.run()
+        NSApplication.shared.terminate(self)
+      } catch {
+        NSLog("Failed to relaunch application: %@", error.localizedDescription)
+      }
     }
   }
 

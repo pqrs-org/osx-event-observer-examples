@@ -1,6 +1,6 @@
 #pragma once
 
-// pqrs::osx::iokit_hid_device_events_monitor v5.2.0
+// pqrs::osx::iokit_hid_device_events_monitor v5.3.0
 
 // (C) Copyright Takayama Fumihiko 2018.
 // Distributed under the Boost Software License, Version 1.0.
@@ -92,8 +92,7 @@ public:
       : dispatcher_client(weak_dispatcher),
         run_loop_thread_(run_loop_thread),
         hid_device_(device),
-        parameters_(parameters),
-        open_timer_(*this) {
+        parameters_(parameters) {
     dispatcher_client_constructor_exception_guard_.initialize(
         [&] {
           if (parameters_.observe_input_reports) {
@@ -594,6 +593,6 @@ private:
   std::vector<uint8_t> input_report_buffer_;
 
   // Construct after potentially throwing members; destruction requires detach.
-  dispatcher::extra::timer open_timer_;
+  dispatcher::extra::timer open_timer_{*this};
 };
 } // namespace pqrs::osx

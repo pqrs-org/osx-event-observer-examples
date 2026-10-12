@@ -32,7 +32,7 @@
 
 ## System requirements
 
-- macOS 10.13 or later
+- macOS 13.0 or later
 
 ---
 

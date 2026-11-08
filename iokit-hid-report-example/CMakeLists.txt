@@ -14,6 +14,16 @@ add_compile_options(-fobjc-arc)
 
 include_directories(SYSTEM ${CMAKE_CURRENT_LIST_DIR}/../vendor/vendor/include)
 
+set(AUTORELEASE_POOL_IMPL
+  ${CMAKE_CURRENT_LIST_DIR}/../vendor/vendor/src/pqrs/osx/autorelease_pool/PQRSOSXAutoreleasePoolImpl.m
+)
+
+set_source_files_properties(
+  ${AUTORELEASE_POOL_IMPL}
+  PROPERTIES
+  COMPILE_OPTIONS -fno-objc-arc
+)
+
 add_executable(
   iokit-hid-report-example
   MACOSX_BUNDLE
@@ -22,6 +32,7 @@ add_executable(
   src/IOKitHIDReportExample.mm
   src/IOKitHIDReportExample.h
   src/main.m
+  ${AUTORELEASE_POOL_IMPL}
   Resources/MainMenu.xib
   Resources/Assets.xcassets
 )

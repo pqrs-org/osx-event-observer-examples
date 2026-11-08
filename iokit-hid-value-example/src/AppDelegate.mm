@@ -2,6 +2,7 @@
 #import "IOKitHIDValueExample.h"
 #include <pqrs/cf/run_loop_thread.hpp>
 #include <pqrs/dispatcher.hpp>
+#include <pqrs/osx/autorelease_pool.hpp>
 
 @interface AppDelegate ()
 
@@ -15,8 +16,11 @@
 - (void)applicationDidFinishLaunching:(NSNotification*)notification {
   self.window.level = NSFloatingWindowLevel;
 
-  pqrs::dispatcher::extra::initialize_shared_dispatcher();
-  pqrs::cf::run_loop_thread::extra::initialize_shared_run_loop_thread();
+  pqrs::dispatcher::extra::initialize_shared_dispatcher(
+      pqrs::osx::autorelease_pool::execute_with_autorelease_pool);
+  pqrs::cf::run_loop_thread::extra::initialize_shared_run_loop_thread(
+      pqrs::cf::run_loop_thread::failure_policy::abort,
+      pqrs::osx::autorelease_pool::execute_with_autorelease_pool);
 
   [self.iokitHIDValueExample initializeIOKitHIDValueExample];
 }
